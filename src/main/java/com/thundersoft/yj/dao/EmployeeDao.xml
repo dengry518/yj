@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.EmployeeDao">
+    <resultMap id="Emp" type="Employee">
+        <result column="img_url" property="imgUrl"></result>
+        <result column="real_name" property="realName"></result>
+        <result column="is_del" property="isDel"></result>
+        <result column="is_admin" property="isAdmin"></result>
+    </resultMap>
+    <select id="getEmpByUsernameAndPassword" resultMap="Emp">
+        SELECT * from bbs_employee emp WHERE emp.username=#{username} and emp.password=#{password}
+    </select>
+</mapper>

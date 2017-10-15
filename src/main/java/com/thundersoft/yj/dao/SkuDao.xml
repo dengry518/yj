@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.SkuDao">
+    <resultMap id="SkuVO" type="Sku">
+        <result column="id" property="id"></result>
+        <result column="size" property="size"></result>
+        <result column="sku_type" property="skuType"></result>
+        <result column="market_price" property="marketPrice"></result>
+        <result column="sku_price" property="skuPrice"></result>
+        <result column="stock_inventory" property="stockInventory"></result>
+        <result column="sku_upper_limit" property="skuUpperLimit"></result>
+        <result column="delive_fee" property="deliveFee"></result>
+        <association property="color" javaType="Color">
+            <result column="colorId" property="id"></result>
+            <result column="colorName" property="name"></result>
+        </association>
+
+        <association property="product" javaType="Product">
+            <result column="productId" property="id"></result>
+            <result column="no" property="no"></result>
+            <result column="pprice" property="price"></result>
+        </association>
+    </resultMap>
+
+    <insert id="saveSku" parameterType="Sku">
+        insert into bbs_sku(product_id, color_id, size, delive_fee, sku_price, stock_inventory, sku_upper_limit,market_price, create_time, sales,sku_type,last_status)
+                    VALUES (#{product.id},#{color.id},#{size},#{deliveFee},#{skuPrice},#{stockInventory},#{skuUpperLimit},#{marketPrice},#{createTime},#{sales},#{skuType},#{lastStatus})
+    </insert>
+    <update id="updateSku" parameterType="Sku">
+        UPDATE bbs_sku set sku_price=#{skuPrice},stock_inventory=#{stockInventory},sku_upper_limit=#{skuUpperLimit},market_price=#{marketPrice}
+        where id=#{id}
+    </update>
+    <select id="getSkusByProductId" resultMap="SkuVO">
+        SELECT sku.*,p.id productId,p.no,c.id colorId,c.name colorName FROM bbs_sku sku,bbs_product p,bbs_color c
+        WHERE sku.product_id=p.id AND sku.color_id=c.id and sku.product_id=#{productId}
+        limit #{begin},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT count(*) FROM bbs_sku sku,bbs_product p,bbs_color c WHERE sku.product_id=p.id AND sku.color_id=c.id and sku.product_id=#{productId}
+    </select>
+    <select id="getSkus" resultMap="SkuVO">
+        SELECT sku.*,p.id productId,p.no,p.price pprice, c.id colorId,c.name colorName FROM bbs_sku sku,bbs_product p,bbs_color c
+        WHERE sku.product_id=p.id AND sku.color_id=c.id and sku.product_id=#{productId} and stock_inventory>0
+    </select>
+</mapper>

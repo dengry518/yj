@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thundersoft.yj.dao.BrandDao">
+    <resultMap id="brand" type="Brand">
+        <!--  <result column="id" property="id"/>
+          <result column="name" property="name"/>
+          <result column="description" property="description"/>
+          <result column="sort" property="sort"/>-->
+        <result column="web_site" property="webSite"/>
+        <result column="img_url" property="imgUrl"/>
+        <result column="is_display" property="isDisplay"/>
+    </resultMap>
+    <insert id="saveBrand" parameterType="Brand">
+        INSERT INTO bbs_brand(name, description, img_url, web_site, sort, is_display) VALUES
+        (#{name},#{description},#{imgUrl},#{webSite},#{sort},#{isDisplay})
+    </insert>
+    <delete id="delById">
+        DELETE from bbs_brand WHERE id=#{id}
+    </delete>
+
+    <delete id="delByIds">
+        DELETE from bbs_brand
+        <where>
+            id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+
+
+    <select id="getBrands" resultMap="brand">
+        SELECT * from bbs_brand
+        <include refid="option"></include>
+        limit #{begin},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT count(*) from bbs_brand
+        <include refid="option"></include>
+    </select>
+    <select id="getAllBrand" resultMap="brand">
+        SELECT * from bbs_brand
+    </select>
+    <select id="getBrandsByIsDisplay" resultMap="brand">
+        SELECT * from bbs_brand WHERE is_display=#{isDisplay}
+    </select>
+
+    <sql id="option">
+        <where>
+            <if test="name!=null &amp;&amp; name!=''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="isDisplay!=null">
+                and is_display=#{isDisplay}
+            </if>
+        </where>
+    </sql>
+</mapper>

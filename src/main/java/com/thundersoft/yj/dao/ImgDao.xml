@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.ImgDao">
+    <insert id="saveImg" parameterType="Img">
+        INSERT INTO bbs_img(is_def, size, type, url, product_id)
+        VALUES (#{isDef},#{size},#{type},#{url},#{product.id})
+    </insert>
+    <update id="updateImgUrl">
+        update bbs_img set url=#{url} where id=#{id}
+    </update>
+    <delete id="delteImgById">
+        DELETE from bbs_img WHERE id=#{id}
+    </delete>
+
+    <select id="getImgsByProductId" resultType="com.thundersoft.yj.entity.Img">
+        select id,is_def isDef,size,type,url from bbs_img  img WHERE img.product_id=#{productId}
+    </select>
+    <select id="getImgByUrl" resultType="com.thundersoft.yj.entity.Img">
+         select id,is_def isDef,size,type,url from bbs_img  img WHERE img.url=#{url}
+    </select>
+</mapper>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.ColorDao">
+    <select id="getColors" resultType="Color">
+        SELECT id,name,parent_id parentId,img_url imgUrl from bbs_color  WHERE parent_id is NOT NULL
+    </select>
+</mapper>

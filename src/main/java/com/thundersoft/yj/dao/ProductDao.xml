@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.ProductDao">
+    <resultMap id="productVO" type="Product">
+        <result column="id" property="id"></result>
+        <result column="no" property="no"></result>
+        <result column="price" property="price"></result>
+        <result column="name" property="name"></result>
+        <result column="is_new" property="isNew"></result>
+        <result column="is_hot" property="isHot"></result>
+        <result column="is_commend" property="isCommend"></result>
+        <result column="is_show" property="isShow"></result>
+        <result column="is_del" property="isDel"></result>
+        <result column="description" property="description"></result>
+        <result column="package_list" property="packageList"></result>
+        <association property="brand" javaType="Brand">
+            <result column="brand_id" property="id"></result>
+            <result column="brandname" property="name"></result>
+        </association>
+
+        <association property="type" javaType="Type">
+            <result column="typename" property="name"></result>
+        </association>
+
+    </resultMap>
+
+    <insert id="saveProduct" parameterType="Product">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        INSERT INTO
+        bbs_product(no,name,weight,is_new,is_hot,is_commend,type_id,brand_id,description,package_list,feature,color,size,img_url,price,is_del)
+        VALUES
+        (#{no},#{name},#{weight},#{isNew},#{isHot},#{isCommend},#{type.id},#{brand.id},#{description},#{packageList},#{feature},#{color},#{size},#{imgUrl},#{price},#{isDel})
+    </insert>
+    <update id="updateProductIsDel" parameterType="int">
+        update bbs_product set is_del=1 WHERE id=${productId}
+    </update>
+    <select id="getTotal" resultType="java.lang.Integer">
+        SELECT count(*) from bbs_product p,bbs_brand b,bbs_type t
+        <include refid="option"></include>
+    </select>
+
+    <select id="getProducts" resultMap="productVO">
+        SELECT p.*,b.name brandname,t.name typename from bbs_product p,bbs_brand b,bbs_type t
+        <include refid="option"></include>
+        ORDER  by p.id desc
+        limit #{begin},#{pageSize}
+    </select>
+
+    <select id="getProductsFront" resultType="Product">
+        SELECT p.id,p.price,p.img_url imgUrl,p.name from bbs_product p
+        ORDER  by p.id desc
+        limit #{begin},#{pageSize}
+    </select>
+    <select id="getTotalFront" resultType="java.lang.Integer">
+        SELECT COUNT(*) from bbs_product
+    </select>
+    <select id="getProductById" resultMap="productVO">
+         SELECT * from bbs_product p where p.id=#{productId}
+    </select>
+
+    <sql id="option">
+        <where>
+            p.brand_id=b.id and p.type_id=t.id
+            <if test="name!=null &amp;&amp; name!=''">
+                and p.name like concat('%', #{name}, '%')
+            </if>
+            <if test="brandId!=null">
+                and brand_id=#{brandId}
+            </if>
+            <if test="isShow!=null">
+                and is_show=#{isShow}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getProductsFront2" resultType="Product">
+        SELECT p.id,p.price,p.img_url imgUrl,p.name from bbs_product p,bbs_brand b,bbs_type t WHERE p.brand_id=b.id and p.type_id=t.id
+        <if test="brandId!=null">
+            and p.brand_id=#{brandId}
+        </if>
+        <if test="typeId!=null">
+            and p.type_id=#{typeId}
+        </if>
+        ORDER  by p.id desc
+        limit #{begin},#{pageSize}
+    </select>
+    <select id="getTotalFront2" resultType="java.lang.Integer">
+        SELECT count(*) from bbs_product p,bbs_brand b,bbs_type t WHERE p.brand_id=b.id and p.type_id=t.id
+        <if test="brandId!=null">
+            and p.brand_id=#{brandId}
+        </if>
+        <if test="typeId!=null">
+            and p.type_id=#{typeId}
+        </if>
+    </select>
+</mapper>

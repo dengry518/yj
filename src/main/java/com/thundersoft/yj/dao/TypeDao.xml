@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.thundersoft.yj.dao.TypeDao">
+ <!--   <resultMap id="type" type="Type">
+        <result column="" property="isDisplay"></result>
+        <result column="parent_id" property="parentId"></result>
+    </resultMap>-->
+
+    <select id="getAllType" resultType="Type">
+        SELECT id,name,parent_id parentId,note,is_display isDisplay from bbs_type
+    </select>
+    <select id="getTypes" resultType="Type">
+         SELECT id,name,parent_id parentId,note,is_display isDisplay from bbs_type WHERE is_display=#{isDisplay}
+    </select>
+</mapper>
